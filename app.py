@@ -1,4 +1,5 @@
 from flask import Flask, render_template, jsonify, request
+from flask_cors import CORS
 from src.helper import download_hugging_face_embeddings
 from langchain_pinecone import PineconeVectorStore
 from langchain_google_genai import ChatGoogleGenerativeAI
@@ -10,16 +11,17 @@ from src.prompt import *
 import os
 
 app = Flask(__name__)
-
+CORS(app)
 
 load_dotenv()
 
 PINECONE_API_KEY=os.environ.get('PINECONE_API_KEY')
-Gemini_API_KEY=os.environ.get('Gemini_API_KEY')
+Gemini_API_KEY=os.environ.get('GEMINI_API_KEY')
 
 
 os.environ["PINECONE_API_KEY"] = PINECONE_API_KEY
-os.environ["GOOGLE_API_KEY"] = Gemini_API_KEY
+if Gemini_API_KEY:
+    os.environ["GOOGLE_API_KEY"] = Gemini_API_KEY
 
 embeddings = download_hugging_face_embeddings()
 
@@ -35,7 +37,7 @@ docsearch = PineconeVectorStore.from_existing_index(
 
 retriever = docsearch.as_retriever(search_type="similarity", search_kwargs={"k":3})
 
-chatModel = ChatGoogleGenerativeAI(model="gemini-3.1-flash-lite-preview")
+chatModel = ChatGoogleGenerativeAI(model="gemini-3.1-flash-lite-preview", transport="rest")
 prompt = ChatPromptTemplate.from_messages(
     [
         ("system", system_prompt),
