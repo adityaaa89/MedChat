@@ -8,6 +8,7 @@ from langchain.chains.combine_documents import create_stuff_documents_chain
 from langchain_core.prompts import ChatPromptTemplate
 from dotenv import load_dotenv
 from src.prompt import *
+from flask import Flask, jsonify, request
 import os
 
 app = Flask(__name__)
@@ -52,7 +53,10 @@ def get_rag_chain():
 
 @app.route("/")
 def index():
-    return render_template('chat.html')
+    return jsonify({
+        "status": "MedChat backend is running",
+        "endpoint": "POST /get"
+    })
 
 
 
