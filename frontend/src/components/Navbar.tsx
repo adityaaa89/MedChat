@@ -1,5 +1,4 @@
 import { Link, useNavigate } from 'react-router-dom'
-import { Activity } from 'lucide-react'
 import { supabase } from '../lib/supabaseClient'
 import { useEffect, useState } from 'react'
 import type { User } from '@supabase/supabase-js'
