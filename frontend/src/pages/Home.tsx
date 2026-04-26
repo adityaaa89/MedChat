@@ -73,7 +73,7 @@ export default function Home() {
 
         {/* Right Side: Chatbot */}
         <div className="h-[calc(100vh-140px)] min-h-[500px]">
-          <Chatbot />
+          <Chatbot isDemo={isDemo} />
         </div>
       </div>
     </div>
