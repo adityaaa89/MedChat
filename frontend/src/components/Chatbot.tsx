@@ -3,12 +3,19 @@ import axios from 'axios'
 import { Send, Bot, Loader2, Trash2 } from 'lucide-react'
 import { supabase } from '../lib/supabaseClient'
 
-type Message = { id: string, text: string, isBot: boolean }
+type Message = { id: string; text: string; isBot: boolean }
+
+const API_URL = import.meta.env.VITE_API_URL
 
 export default function Chatbot({ isDemo = false }: { isDemo?: boolean }) {
   const [messages, setMessages] = useState<Message[]>([
-    { id: 'welcome', text: 'Hello! I am your AI Health Assistant. How can I help you today?', isBot: true }
+    {
+      id: 'welcome',
+      text: 'Hello! I am your AI Health Assistant. How can I help you today?',
+      isBot: true,
+    },
   ])
+
   const [input, setInput] = useState('')
   const [isLoading, setIsLoading] = useState(false)
   const [isFetchingChats, setIsFetchingChats] = useState(false)
@@ -17,25 +24,30 @@ export default function Chatbot({ isDemo = false }: { isDemo?: boolean }) {
 
   const scrollToBottom = () => {
     if (messagesEndRef.current) {
-      const container = messagesEndRef.current.parentElement;
+      const container = messagesEndRef.current.parentElement
       if (container) {
-        container.scrollTop = container.scrollHeight;
+        container.scrollTop = container.scrollHeight
       }
     }
   }
 
   useEffect(() => {
     scrollToBottom()
-  }, [messages])
+  }, [messages, isLoading])
 
   useEffect(() => {
     if (isDemo) return
 
     const loadChats = async () => {
       setIsFetchingChats(true)
-      const { data: { user } } = await supabase.auth.getUser()
+
+      const {
+        data: { user },
+      } = await supabase.auth.getUser()
+
       if (user) {
         setUserId(user.id)
+
         const { data, error } = await supabase
           .from('chat_messages')
           .select('*')
@@ -43,19 +55,25 @@ export default function Chatbot({ isDemo = false }: { isDemo?: boolean }) {
           .order('created_at', { ascending: true })
 
         if (error) {
-          console.error("Error fetching chats from Supabase:", error.message)
+          console.error('Error fetching chats from Supabase:', error.message)
         } else if (data && data.length > 0) {
           const loadedMessages = data.map((msg: any) => ({
             id: msg.id,
             text: msg.content,
-            isBot: msg.role === 'assistant'
+            isBot: msg.role === 'assistant',
           }))
+
           setMessages([
-            { id: 'welcome', text: 'Hello! I am your AI Health Assistant. How can I help you today?', isBot: true },
-            ...loadedMessages
+            {
+              id: 'welcome',
+              text: 'Hello! I am your AI Health Assistant. How can I help you today?',
+              isBot: true,
+            },
+            ...loadedMessages,
           ])
         }
       }
+
       setIsFetchingChats(false)
     }
 
@@ -64,42 +82,80 @@ export default function Chatbot({ isDemo = false }: { isDemo?: boolean }) {
 
   const handleSend = async (e?: React.FormEvent) => {
     e?.preventDefault()
+
     if (!input.trim() || isLoading) return
 
     const userMsg = input.trim()
+    const userMessageId = crypto.randomUUID()
+
     setInput('')
-    setMessages(prev => [...prev, { id: Date.now().toString(), text: userMsg, isBot: false }])
+    setMessages((prev) => [
+      ...prev,
+      { id: userMessageId, text: userMsg, isBot: false },
+    ])
+
     setIsLoading(true)
 
     try {
       if (!isDemo && userId) {
-        const { error: insertError } = await supabase.from('chat_messages').insert({
-          user_id: userId,
-          role: 'user',
-          content: userMsg
-        })
-        if (insertError) console.error("Error saving user message:", insertError.message)
+        const { error: insertError } = await supabase
+          .from('chat_messages')
+          .insert({
+            user_id: userId,
+            role: 'user',
+            content: userMsg,
+          })
+
+        if (insertError) {
+          console.error('Error saving user message:', insertError.message)
+        }
       }
 
-      const formData = new FormData()
-      formData.append('msg', userMsg)
-      
-      const res = await axios.post('http://localhost:3000/get', formData)
-      const botMsg = res.data
+      if (!API_URL) {
+        throw new Error('VITE_API_URL is missing. Add it in frontend/.env')
+      }
 
-      setMessages(prev => [...prev, { id: Date.now().toString(), text: botMsg, isBot: true }])
+      const formData = new URLSearchParams()
+      formData.append('msg', userMsg)
+
+      const res = await axios.post(`${API_URL}/get`, formData, {
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+      })
+
+      const botMsg =
+        typeof res.data === 'string' ? res.data : JSON.stringify(res.data)
+
+      setMessages((prev) => [
+        ...prev,
+        { id: crypto.randomUUID(), text: botMsg, isBot: true },
+      ])
 
       if (!isDemo && userId) {
-        const { error: botInsertError } = await supabase.from('chat_messages').insert({
-          user_id: userId,
-          role: 'assistant',
-          content: botMsg
-        })
-        if (botInsertError) console.error("Error saving bot message:", botInsertError.message)
+        const { error: botInsertError } = await supabase
+          .from('chat_messages')
+          .insert({
+            user_id: userId,
+            role: 'assistant',
+            content: botMsg,
+          })
+
+        if (botInsertError) {
+          console.error('Error saving bot message:', botInsertError.message)
+        }
       }
     } catch (error) {
       console.error(error)
-      setMessages(prev => [...prev, { id: Date.now().toString(), text: 'Sorry, I encountered an error. Please ensure the backend is running.', isBot: true }])
+
+      setMessages((prev) => [
+        ...prev,
+        {
+          id: crypto.randomUUID(),
+          text: 'Sorry, I encountered an error. Please try again.',
+          isBot: true,
+        },
+      ])
     } finally {
       setIsLoading(false)
     }
@@ -107,7 +163,14 @@ export default function Chatbot({ isDemo = false }: { isDemo?: boolean }) {
 
   const handleClearChat = async () => {
     if (window.confirm('Are you sure you want to clear your chat history?')) {
-      setMessages([{ id: 'welcome', text: 'Hello! I am your AI Health Assistant. How can I help you today?', isBot: true }])
+      setMessages([
+        {
+          id: 'welcome',
+          text: 'Hello! I am your AI Health Assistant. How can I help you today?',
+          isBot: true,
+        },
+      ])
+
       if (!isDemo && userId) {
         await supabase.from('chat_messages').delete().eq('user_id', userId)
       }
@@ -121,13 +184,17 @@ export default function Chatbot({ isDemo = false }: { isDemo?: boolean }) {
           <div className="w-10 h-10 rounded-full bg-white/60 shadow-sm flex items-center justify-center text-pastel-teal">
             <Bot className="w-6 h-6" />
           </div>
+
           <div>
-            <h2 className="font-bold text-lg tracking-tight">AI Health Assistant</h2>
+            <h2 className="font-bold text-lg tracking-tight">
+              AI Health Assistant
+            </h2>
             <p className="text-slate-500 text-sm">Online and ready to help</p>
           </div>
         </div>
+
         {!isDemo && userId && (
-          <button 
+          <button
             onClick={handleClearChat}
             className="flex items-center gap-2 px-3 py-1.5 text-sm text-slate-500 hover:text-red-600 hover:bg-white/50 rounded-lg transition-colors border border-transparent hover:border-black/5"
             title="Clear Chat History"
@@ -144,46 +211,60 @@ export default function Chatbot({ isDemo = false }: { isDemo?: boolean }) {
           </div>
         ) : (
           messages.map((msg) => (
-            <div key={msg.id} className={`flex ${msg.isBot ? 'justify-start' : 'justify-end'}`}>
-              <div className={`max-w-[80%] rounded-[20px] p-4 shadow-sm text-sm md:text-base ${msg.isBot ? 'bg-white border border-black/5 text-slate-700 rounded-tl-sm' : 'bg-pastel-clay text-white rounded-tr-sm'}`}>
+            <div
+              key={msg.id}
+              className={`flex ${msg.isBot ? 'justify-start' : 'justify-end'}`}
+            >
+              <div
+                className={`max-w-[80%] rounded-[20px] p-4 shadow-sm text-sm md:text-base ${
+                  msg.isBot
+                    ? 'bg-white border border-black/5 text-slate-700 rounded-tl-sm'
+                    : 'bg-pastel-clay text-white rounded-tr-sm'
+                }`}
+              >
                 <p className="whitespace-pre-wrap">{msg.text}</p>
               </div>
             </div>
           ))
         )}
+
         {isLoading && (
           <div className="flex justify-start">
             <div className="bg-white border border-black/5 text-slate-500 rounded-[20px] rounded-tl-sm p-4 shadow-sm flex gap-2 items-center text-sm">
-              <Loader2 className="w-4 h-4 animate-spin text-pastel-clay" /> Thinking...
+              <Loader2 className="w-4 h-4 animate-spin text-pastel-clay" />
+              Thinking...
             </div>
           </div>
         )}
+
         <div ref={messagesEndRef} />
       </div>
 
       <div className="p-4 bg-cream-100 border-t border-black/5">
         <div className="flex gap-2 mb-3 overflow-x-auto pb-2 scrollbar-hide">
-          {['Just listen', 'Give suggestions', 'Explain symptoms'].map(chip => (
-            <button 
-              key={chip}
-              onClick={() => {
-                setInput(chip)
-              }}
-              className="whitespace-nowrap px-4 py-2 rounded-full bg-white border border-black/5 text-slate-600 text-sm font-medium hover:shadow-md transition-all duration-200 shadow-sm"
-            >
-              {chip}
-            </button>
-          ))}
+          {['Just listen', 'Give suggestions', 'Explain symptoms'].map(
+            (chip) => (
+              <button
+                key={chip}
+                onClick={() => setInput(chip)}
+                className="whitespace-nowrap px-4 py-2 rounded-full bg-white border border-black/5 text-slate-600 text-sm font-medium hover:shadow-md transition-all duration-200 shadow-sm"
+              >
+                {chip}
+              </button>
+            )
+          )}
         </div>
+
         <form onSubmit={handleSend} className="flex gap-2 items-center">
-          <input 
-            type="text" 
+          <input
+            type="text"
             value={input}
             onChange={(e) => setInput(e.target.value)}
             placeholder="Type your medical question here..."
             className="flex-1 px-5 py-4 rounded-full bg-white border border-black/5 text-slate-800 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-pastel-teal/50 transition-all shadow-sm"
           />
-          <button 
+
+          <button
             type="submit"
             disabled={!input.trim() || isLoading}
             className="w-14 h-14 rounded-full bg-pastel-teal text-white flex items-center justify-center shadow-sm hover:shadow-md hover:bg-pastel-teal_hover transition-all duration-200 disabled:opacity-50 disabled:hover:bg-pastel-teal flex-shrink-0"
