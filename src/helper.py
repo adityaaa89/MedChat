@@ -48,14 +48,14 @@ from langchain_core.embeddings import Embeddings
 
 class HFInferenceEmbeddings(Embeddings):
     def __init__(self):
-        self.api_url = "https://api-inference.huggingface.co/pipeline/feature-extraction/sentence-transformers/all-MiniLM-L6-v2"
+        self.api_url = "https://api-inference.huggingface.co/models/sentence-transformers/all-MiniLM-L6-v2"
         self.headers = {"Authorization": f"Bearer {os.environ.get('HUGGINGFACEHUB_API_TOKEN', '')}"}
 
     def embed_documents(self, texts: List[str]) -> List[List[float]]:
         response = requests.post(
             self.api_url, 
             headers=self.headers, 
-            json={"inputs": texts, "options": {"wait_for_model": True}}
+            json={"inputs": texts}
         )
         if response.status_code != 200:
             raise Exception(f"Hugging Face API error: {response.status_code} - {response.text}")
