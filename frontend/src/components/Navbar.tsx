@@ -1,5 +1,5 @@
 import { Link, useNavigate } from 'react-router-dom'
-import { supabase } from '../lib/supabaseClient'
+import { supabase } from '../lib/supabaseClient.ts'
 import { useEffect, useState } from 'react'
 import type { User, Session } from '@supabase/supabase-js'
 

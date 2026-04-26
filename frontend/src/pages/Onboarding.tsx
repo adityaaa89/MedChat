@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { supabase } from '../lib/supabaseClient'
+import { supabase } from '../lib/supabaseClient.ts'
 import InputField from '../components/InputField'
 import type { User } from '@supabase/supabase-js'
 

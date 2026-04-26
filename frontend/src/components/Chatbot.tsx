@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from 'react'
 import axios from 'axios'
 import { Send, Bot, Loader2, Trash2 } from 'lucide-react'
-import { supabase } from '../lib/supabaseClient'
+import { supabase } from '../lib/supabaseClient.ts'
 
 type Message = { id: string; text: string; isBot: boolean }
 

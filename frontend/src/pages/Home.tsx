@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
-import { supabase } from '../lib/supabaseClient'
+import { supabase } from '../lib/supabaseClient.ts'
 import DashboardCards from '../components/DashboardCards'
 import Chatbot from '../components/Chatbot'
 import { Loader2 } from 'lucide-react'
