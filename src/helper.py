@@ -48,8 +48,11 @@ from langchain_core.embeddings import Embeddings
 
 class HFInferenceEmbeddings(Embeddings):
     def __init__(self):
-        self.api_url = "https://api-inference.huggingface.co/models/sentence-transformers/all-MiniLM-L6-v2"
-        self.headers = {"Authorization": f"Bearer {os.environ.get('HUGGINGFACEHUB_API_TOKEN', '')}"}
+        self.api_url = "https://router.huggingface.co/hf-inference/models/sentence-transformers/all-MiniLM-L6-v2"
+        self.headers = {
+    "Authorization": f"Bearer {os.environ.get('HUGGINGFACEHUB_API_TOKEN')}",
+    "Content-Type": "application/json"
+}
 
     def embed_documents(self, texts: List[str]) -> List[List[float]]:
         response = requests.post(
