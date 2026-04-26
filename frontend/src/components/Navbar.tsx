@@ -31,10 +31,10 @@ export default function Navbar() {
 
   return (
     <nav className="w-full px-6 py-4 border border-[#E5D6C5] bg-cream-100 flex justify-between items-center z-50 rounded-4xl shadow-sm ring-1 ring-white/80">
-      <Link to="/" className="flex items-center gap-2 text-slate-800 font-bold text-xl tracking-tight">
-        <Activity className="w-6 h-6 text-pastel-teal" />
-        MedChat
-      </Link>
+     <Link to="/" className="flex items-center gap-2 text-slate-900 text-xl tracking-tight">
+  <img src="/icons8-health-book-80.png" alt="MedChat Logo" className="w-10 h-10" />
+  <span className="font-extrabold text-pastel-teal text-3xl " >MedChat</span>
+</Link>
       <div className="flex gap-6 items-center">
         {user ? (
           <>
