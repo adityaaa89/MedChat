@@ -1,5 +1,4 @@
 from langchain_community.document_loaders import PyPDFLoader, DirectoryLoader
-from langchain_community.embeddings import HuggingFaceEmbeddings
 from langchain_core.documents import Document
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from typing import List
@@ -43,7 +42,32 @@ def text_split(extracted_data):
 
 
 
+import os
+import requests
+from langchain_core.embeddings import Embeddings
+
+class HFInferenceEmbeddings(Embeddings):
+    def __init__(self):
+        self.api_url = "https://api-inference.huggingface.co/pipeline/feature-extraction/sentence-transformers/all-MiniLM-L6-v2"
+        self.headers = {"Authorization": f"Bearer {os.environ.get('HUGGINGFACEHUB_API_TOKEN', '')}"}
+
+    def embed_documents(self, texts: List[str]) -> List[List[float]]:
+        response = requests.post(
+            self.api_url, 
+            headers=self.headers, 
+            json={"inputs": texts, "options": {"wait_for_model": True}}
+        )
+        if response.status_code != 200:
+            raise Exception(f"Hugging Face API error: {response.status_code} - {response.text}")
+        
+        result = response.json()
+        if not isinstance(result, list):
+            raise Exception(f"Invalid response format from Hugging Face API: {result}")
+        return result
+
+    def embed_query(self, text: str) -> List[float]:
+        return self.embed_documents([text])[0]
+
 #Download the Embeddings from HuggingFace 
 def download_hugging_face_embeddings():
-    embeddings=HuggingFaceEmbeddings(model_name='sentence-transformers/all-MiniLM-L6-v2')  #this model return 384 dimensions
-    return embeddings
+    return HFInferenceEmbeddings()

@@ -23,30 +23,30 @@ os.environ["PINECONE_API_KEY"] = PINECONE_API_KEY
 if Gemini_API_KEY:
     os.environ["GOOGLE_API_KEY"] = Gemini_API_KEY
 
-embeddings = download_hugging_face_embeddings()
+rag_chain_instance = None
 
-index_name = "medchat" 
-# Embed each chunk and upsert the embeddings into your Pinecone index.
-docsearch = PineconeVectorStore.from_existing_index(
-    index_name=index_name,
-    embedding=embeddings
-)
-
-
-
-
-retriever = docsearch.as_retriever(search_type="similarity", search_kwargs={"k":3})
-
-chatModel = ChatGoogleGenerativeAI(model="gemini-3.1-flash-lite-preview", transport="rest")
-prompt = ChatPromptTemplate.from_messages(
-    [
-        ("system", system_prompt),
-        ("human", "{input}"),
-    ]
-)
-
-question_answer_chain = create_stuff_documents_chain(chatModel, prompt)
-rag_chain = create_retrieval_chain(retriever, question_answer_chain)
+def get_rag_chain():
+    global rag_chain_instance
+    if rag_chain_instance is None:
+        embeddings = download_hugging_face_embeddings()
+        index_name = "medchat"
+        docsearch = PineconeVectorStore.from_existing_index(
+            index_name=index_name,
+            embedding=embeddings
+        )
+        retriever = docsearch.as_retriever(search_type="similarity", search_kwargs={"k":3})
+        
+        chatModel = ChatGoogleGenerativeAI(model="gemini-3.1-flash-lite-preview", transport="rest")
+        prompt = ChatPromptTemplate.from_messages(
+            [
+                ("system", system_prompt),
+                ("human", "{input}"),
+            ]
+        )
+        
+        question_answer_chain = create_stuff_documents_chain(chatModel, prompt)
+        rag_chain_instance = create_retrieval_chain(retriever, question_answer_chain)
+    return rag_chain_instance
 
 
 
@@ -61,7 +61,8 @@ def chat():
     msg = request.form["msg"]
     input = msg
     # print(input)
-    response = rag_chain.invoke({"input": msg})
+    chain = get_rag_chain()
+    response = chain.invoke({"input": msg})
     # print("Response : ", response["answer"])
     return str(response["answer"])
 
