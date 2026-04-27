@@ -1,5 +1,5 @@
 import HealthCard from './HealthCard'
-import { Activity, Droplet, User, Ruler, Weight, AlertCircle } from 'lucide-react'
+import { Droplet, User, Ruler, Weight, AlertCircle } from 'lucide-react'
 
 export default function DashboardCards({ profile, isDemo }: { profile: any, isDemo: boolean }) {
   const data = isDemo ? {
@@ -32,10 +32,6 @@ export default function DashboardCards({ profile, isDemo }: { profile: any, isDe
         </div>
       </div>
 
-      <div className="grid grid-cols-2 gap-4">
-        <HealthCard title="Blood Pressure" value="120/80" unit="mmHg" icon={<Activity className="w-5 h-5 text-pastel-teal" />} trend="-2%" trendUp={true} bgColor="bg-[#FDF6E3]" borderColor="border-t-[#EBE2CA]" />
-        <HealthCard title="Oxygen Level" value="98" unit="%" icon={<Droplet className="w-5 h-5 text-pastel-teal" />} bgColor="bg-cream-100" borderColor="border-t-slate-200" />
-      </div>
     </div>
   )
 }
