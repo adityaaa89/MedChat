@@ -67,13 +67,13 @@ export default function Onboarding() {
   }
 
   return (
-    <div className="flex justify-center items-center min-h-[calc(100vh-80px)] px-4 py-8">
-      <div className="w-full max-w-2xl p-8 md:p-12 rounded-[24px] bg-cream-50 border border-black/5 shadow-soft">
-        <h2 className="text-3xl font-extrabold text-slate-800 mb-2 text-center tracking-tight">
+    <div className="flex justify-center items-center min-h-[calc(100vh-80px)] px-4 py-6 sm:py-8">
+      <div className="w-full max-w-2xl p-6 sm:p-8 md:p-12 rounded-[20px] sm:rounded-[24px] bg-cream-50 border border-black/5 shadow-soft">
+        <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-800 mb-2 text-center tracking-tight">
           Complete Your Profile
         </h2>
 
-        <p className="text-center text-slate-500 mb-8">
+        <p className="text-center text-slate-500 mb-6 sm:mb-8 text-sm sm:text-base">
           Tell us a bit about your health so we can personalize your experience.
         </p>
 
@@ -83,8 +83,8 @@ export default function Onboarding() {
           </div>
         )}
 
-        <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-x-6">
-          <div className="md:col-span-2">
+        <form onSubmit={handleSubmit} className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-x-6 gap-y-3 sm:gap-y-4">
+          <div className="sm:col-span-2">
             <InputField
               label="Full Name"
               name="name"
@@ -133,7 +133,7 @@ export default function Onboarding() {
             placeholder="70"
           />
 
-          <div className="md:col-span-2">
+          <div className="sm:col-span-2">
             <InputField
               label="Chronic Diseases (Optional)"
               name="disease"
@@ -143,7 +143,7 @@ export default function Onboarding() {
             />
           </div>
 
-          <div className="md:col-span-2">
+          <div className="sm:col-span-2">
             <InputField
               label="Allergies (Optional)"
               name="allergies"
@@ -153,11 +153,11 @@ export default function Onboarding() {
             />
           </div>
 
-          <div className="md:col-span-2 mt-6">
+          <div className="sm:col-span-2 mt-4 sm:mt-6">
             <button
               type="submit"
               disabled={loading}
-              className="w-full py-4 rounded-full bg-pastel-teal text-white font-bold text-lg shadow-sm hover:shadow-md hover:bg-pastel-teal_hover transition-all duration-200 disabled:opacity-70 disabled:hover:bg-pastel-teal"
+              className="w-full py-3 sm:py-4 rounded-full bg-pastel-teal text-white font-bold text-base sm:text-lg shadow-sm hover:shadow-md hover:bg-pastel-teal_hover transition-all duration-200 disabled:opacity-70 disabled:hover:bg-pastel-teal"
             >
               {loading ? 'Saving Profile...' : 'Complete Setup'}
             </button>

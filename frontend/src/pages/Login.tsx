@@ -29,9 +29,9 @@ export default function Login() {
   }
 
   return (
-    <div className="flex justify-center items-center h-[calc(100vh-80px)] px-4">
-      <div className="w-full max-w-md p-8 rounded-[24px] bg-cream-50 border border-black/5 shadow-soft">
-        <h2 className="text-3xl font-extrabold text-slate-800 mb-6 text-center tracking-tight">Welcome Back</h2>
+    <div className="flex justify-center items-center min-h-[calc(100vh-80px)] px-4 py-8">
+      <div className="w-full max-w-md p-6 sm:p-8 rounded-[20px] sm:rounded-[24px] bg-cream-50 border border-black/5 shadow-soft">
+        <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-800 mb-6 text-center tracking-tight">Welcome Back</h2>
         {error && <div className="mb-4 p-3 bg-red-50 text-red-700 rounded-xl text-sm border border-red-100">{error}</div>}
         <form onSubmit={handleLogin} className="flex flex-col gap-4">
           <InputField 
@@ -53,12 +53,12 @@ export default function Login() {
           <button 
             type="submit" 
             disabled={loading}
-            className="mt-4 w-full py-4 rounded-full bg-pastel-teal text-white font-bold text-lg shadow-sm hover:shadow-md hover:bg-pastel-teal_hover transition-all duration-200 disabled:opacity-70 disabled:hover:bg-pastel-teal"
+            className="mt-4 w-full py-3 sm:py-4 rounded-full bg-pastel-teal text-white font-bold text-base sm:text-lg shadow-sm hover:shadow-md hover:bg-pastel-teal_hover transition-all duration-200 disabled:opacity-70 disabled:hover:bg-pastel-teal"
           >
             {loading ? 'Signing in...' : 'Sign In'}
           </button>
         </form>
-        <p className="mt-6 text-center text-slate-600">
+        <p className="mt-6 text-center text-xs sm:text-sm text-slate-600">
           Don't have an account? <Link to="/signup" className="text-pastel-teal font-bold hover:underline">Sign Up</Link>
         </p>
       </div>

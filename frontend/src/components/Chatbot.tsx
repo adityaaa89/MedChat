@@ -178,36 +178,36 @@ export default function Chatbot({ isDemo = false }: { isDemo?: boolean }) {
   }
 
   return (
-    <div className="flex flex-col h-full bg-cream-50 rounded-[28px] border border-black/5 shadow-soft overflow-hidden">
-      <div className="p-6 bg-pastel-teal_light border-b border-black/5 text-slate-800 flex justify-between items-center gap-3">
+    <div className="flex flex-col h-full bg-cream-50 rounded-[20px] sm:rounded-[28px] border border-black/5 shadow-soft overflow-hidden">
+      <div className="p-3 sm:p-6 bg-pastel-teal_light border-b border-black/5 text-slate-800 flex justify-between items-center gap-2 sm:gap-3">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-full bg-white/60 shadow-sm flex items-center justify-center text-pastel-teal">
-            <Bot className="w-6 h-6" />
+          <div className="w-8 sm:w-10 h-8 sm:h-10 rounded-full bg-white/60 shadow-sm flex items-center justify-center text-pastel-teal">
+            <Bot className="w-5 sm:w-6 h-5 sm:h-6" />
           </div>
 
           <div>
-            <h2 className="font-bold text-lg tracking-tight">
+            <h2 className="font-bold text-sm sm:text-lg tracking-tight">
               AI Health Assistant
             </h2>
-            <p className="text-slate-500 text-sm">Online and ready to help</p>
+            <p className="text-xs sm:text-sm text-slate-500">Online and ready to help</p>
           </div>
         </div>
 
         {!isDemo && userId && (
           <button
             onClick={handleClearChat}
-            className="flex items-center gap-2 px-3 py-1.5 text-sm text-slate-500 hover:text-red-600 hover:bg-white/50 rounded-lg transition-colors border border-transparent hover:border-black/5"
+            className="flex items-center gap-1 sm:gap-2 px-2 sm:px-3 py-1.5 text-xs sm:text-sm text-slate-500 hover:text-red-600 hover:bg-white/50 rounded-lg transition-colors border border-transparent hover:border-black/5"
             title="Clear Chat History"
           >
-            <Trash2 className="w-4 h-4" /> Clear
+            <Trash2 className="w-3 sm:w-4 h-3 sm:h-4" /> <span className="hidden sm:inline">Clear</span>
           </button>
         )}
       </div>
 
-      <div className="flex-1 overflow-y-auto p-6 space-y-4 bg-cream-50">
+      <div className="flex-1 overflow-y-auto p-3 sm:p-6 space-y-3 sm:space-y-4 bg-cream-50">
         {isFetchingChats ? (
-          <div className="flex justify-center py-10">
-            <Loader2 className="w-6 h-6 animate-spin text-pastel-teal" />
+          <div className="flex justify-center py-8 sm:py-10">
+            <Loader2 className="w-5 sm:w-6 h-5 sm:h-6 animate-spin text-pastel-teal" />
           </div>
         ) : (
           messages.map((msg) => (
@@ -216,7 +216,7 @@ export default function Chatbot({ isDemo = false }: { isDemo?: boolean }) {
               className={`flex ${msg.isBot ? 'justify-start' : 'justify-end'}`}
             >
               <div
-                className={`max-w-[80%] rounded-[20px] p-4 shadow-sm text-sm md:text-base ${
+                className={`max-w-[90%] sm:max-w-[85%] md:max-w-[80%] rounded-[16px] sm:rounded-[20px] p-3 sm:p-4 shadow-sm text-xs sm:text-sm md:text-base ${
                   msg.isBot
                     ? 'bg-white border border-black/5 text-slate-700 rounded-tl-sm'
                     : 'bg-pastel-clay text-white rounded-tr-sm'
@@ -230,8 +230,8 @@ export default function Chatbot({ isDemo = false }: { isDemo?: boolean }) {
 
         {isLoading && (
           <div className="flex justify-start">
-            <div className="bg-white border border-black/5 text-slate-500 rounded-[20px] rounded-tl-sm p-4 shadow-sm flex gap-2 items-center text-sm">
-              <Loader2 className="w-4 h-4 animate-spin text-pastel-clay" />
+            <div className="bg-white border border-black/5 text-slate-500 rounded-[16px] sm:rounded-[20px] rounded-tl-sm p-3 sm:p-4 shadow-sm flex gap-2 items-center text-xs sm:text-sm">
+              <Loader2 className="w-3 sm:w-4 h-3 sm:h-4 animate-spin text-pastel-clay" />
               Thinking...
             </div>
           </div>
@@ -240,14 +240,14 @@ export default function Chatbot({ isDemo = false }: { isDemo?: boolean }) {
         <div ref={messagesEndRef} />
       </div>
 
-      <div className="p-4 bg-cream-100 border-t border-black/5">
-        <div className="flex gap-2 mb-3 overflow-x-auto pb-2 scrollbar-hide">
+      <div className="p-3 sm:p-4 bg-cream-100 border-t border-black/5">
+        <div className="flex gap-2 mb-2 sm:mb-3 overflow-x-auto pb-2 scrollbar-hide">
           {['Just listen', 'Give suggestions', 'Explain symptoms'].map(
             (chip) => (
               <button
                 key={chip}
                 onClick={() => setInput(chip)}
-                className="whitespace-nowrap px-4 py-2 rounded-full bg-white border border-black/5 text-slate-600 text-sm font-medium hover:shadow-md transition-all duration-200 shadow-sm"
+                className="whitespace-nowrap px-3 py-1.5 sm:px-4 sm:py-2 rounded-full bg-white border border-black/5 text-slate-600 text-xs sm:text-sm font-medium hover:shadow-md transition-all duration-200 shadow-sm"
               >
                 {chip}
               </button>
@@ -255,21 +255,21 @@ export default function Chatbot({ isDemo = false }: { isDemo?: boolean }) {
           )}
         </div>
 
-        <form onSubmit={handleSend} className="flex gap-2 items-center">
+        <form onSubmit={handleSend} className="flex gap-2 items-center flex-wrap sm:flex-nowrap">
           <input
             type="text"
             value={input}
             onChange={(e) => setInput(e.target.value)}
-            placeholder="Type your medical question here..."
-            className="flex-1 px-5 py-4 rounded-full bg-white border border-black/5 text-slate-800 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-pastel-teal/50 transition-all shadow-sm"
+            placeholder="Type your question..."
+            className="flex-1 min-w-0 px-4 sm:px-5 py-3 sm:py-4 rounded-full bg-white border border-black/5 text-slate-800 text-sm sm:text-base placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-pastel-teal/50 transition-all shadow-sm"
           />
 
           <button
             type="submit"
             disabled={!input.trim() || isLoading}
-            className="w-14 h-14 rounded-full bg-pastel-teal text-white flex items-center justify-center shadow-sm hover:shadow-md hover:bg-pastel-teal_hover transition-all duration-200 disabled:opacity-50 disabled:hover:bg-pastel-teal flex-shrink-0"
+            className="w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-pastel-teal text-white flex items-center justify-center shadow-sm hover:shadow-md hover:bg-pastel-teal_hover transition-all duration-200 disabled:opacity-50 disabled:hover:bg-pastel-teal flex-shrink-0"
           >
-            <Send className="w-5 h-5 ml-1" />
+            <Send className="w-4 sm:w-5 h-4 sm:h-5 ml-1" />
           </button>
         </form>
       </div>

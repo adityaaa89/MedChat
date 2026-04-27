@@ -57,22 +57,22 @@ export default function Home() {
   }
 
   return (
-    <div className="flex-1 p-6 lg:p-8 h-full">
-      <div className="grid lg:grid-cols-2 gap-8 h-full">
+    <div className="flex-1 p-3 sm:p-4 md:p-6 lg:p-8 h-full">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 lg:gap-8 h-full">
         {/* Left Side: Health Dashboard */}
-        <div className="flex flex-col h-full overflow-y-auto pr-4 scrollbar-hide">
-          <div className="mb-8">
-            <h1 className="text-4xl font-extrabold text-slate-800 mb-2 tracking-tight">
+        <div className="flex flex-col h-full overflow-y-auto pr-0 sm:pr-4 scrollbar-hide">
+          <div className="mb-4 sm:mb-8">
+            <h1 className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-slate-800 mb-2 tracking-tight">
               Good {new Date().getHours() < 12 ? 'Morning' : new Date().getHours() < 18 ? 'Afternoon' : 'Evening'}, <span className="text-pastel-clay">{userName}</span>
             </h1>
-            <p className="text-slate-500 text-lg">Here's your health overview for today.</p>
+            <p className="text-slate-500 text-sm sm:text-base md:text-lg">Here's your health overview for today.</p>
           </div>
           
           <DashboardCards profile={profile} isDemo={isDemo} />
         </div>
 
         {/* Right Side: Chatbot */}
-        <div className="h-[calc(100vh-140px)] min-h-[500px]">
+        <div className="min-h-[400px] sm:min-h-[500px] lg:h-[calc(100vh-140px)]">
           <Chatbot isDemo={isDemo} />
         </div>
       </div>
