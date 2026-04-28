@@ -91,7 +91,7 @@ export default function Onboarding() {
               required
               value={formData.name}
               onChange={handleChange}
-              placeholder="John Doe"
+              placeholder="Name"
             />
           </div>
 
