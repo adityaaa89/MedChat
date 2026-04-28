@@ -189,7 +189,7 @@ export default function Chatbot({ isDemo = false }: { isDemo?: boolean }) {
             <h2 className="font-bold text-sm sm:text-lg tracking-tight">
               AI Health Assistant
             </h2>
-            <p className="text-xs sm:text-sm text-slate-500">Online and ready to help</p>
+            <p className="text-xs sm:text-sm text-slate-500">Response may delay due to api limitations</p>
           </div>
         </div>
 
