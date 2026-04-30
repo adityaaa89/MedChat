@@ -74,7 +74,7 @@ def chat():
     chain = get_rag_chain()
     result = chain.invoke({"input": msg})
 
-    return jsonify({"answer": result["answer"]})
+    return result["answer"].strip()
 
 
 if __name__ == "__main__":
