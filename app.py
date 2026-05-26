@@ -40,7 +40,7 @@ def get_rag_chain():
         )
 
         llm = ChatGoogleGenerativeAI(
-            model="gemini-3.1-flash-lite-preview",
+            model="gemini-3.1-flash-lite",
             transport="rest"
         )
 
