@@ -2,6 +2,7 @@ from langchain_community.document_loaders import PyPDFLoader, DirectoryLoader
 from langchain_core.documents import Document
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain_core.embeddings import Embeddings
+from langchain_community.embeddings.fastembed import FastEmbedEmbeddings
 from typing import List
 import os
 import requests
@@ -117,4 +118,4 @@ class HFInferenceEmbeddings(Embeddings):
 
 # Download / return embeddings
 def download_hugging_face_embeddings():
-    return HFInferenceEmbeddings()
+    return FastEmbedEmbeddings(model_name="sentence-transformers/all-MiniLM-L6-v2")
